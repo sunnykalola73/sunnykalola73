@@ -1,0 +1,25 @@
+name: Sync Repositories
+on:
+  push:
+    branches:
+      - main  # Set this to your primary branch name
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required to get all history for a mirror sync
+
+      - name: Push to Destination
+        run: |
+          # 1. Remove restricted default credentials
+          git config --unset-all http.https://github.com
+          
+          # 2. Add the destination using the PAT for authentication
+          git remote add destination https://x-access-token:${{ secrets.SYNC_TOKEN }}@://github.com
+          
+          # 3. Mirror the push to the target repo
+          git push sunnykalola73/sunnykalola73.github.io main --force
