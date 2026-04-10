@@ -5,20 +5,22 @@ on:
       - main
 
 jobs:
-  build:
+  sync:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          # This prevents the default token from interfering with your PAT
-          persist-credentials: false 
+          persist-credentials: false
 
       - name: Push to Website Repo
+        env:
+          PAT: ${{ secrets.SYNC_PAT }}
         run: |
+          echo "Secret length is ${#PAT}"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           
-          # Force push to the destination repo using your SYNC_PAT
-          git push --force https://x-access-token:${{ secrets.SYNC_PAT }}@://github.com main
+          # This version uses an environment variable for cleaner URL construction
+          git push --force "https://x-access-token:$PAT@://github.com" main
