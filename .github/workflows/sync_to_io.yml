@@ -1,0 +1,22 @@
+name: Sync to GitHub Pages Repo
+on:
+  push:
+    branches:
+      - main  # Set this to your default branch name
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Push to Website Repo
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          
+          # Force push the current content to the .io repository
+          git push --force https://x-access-token:${{ secrets.SYNC_PAT }}@://github.com main
