@@ -18,9 +18,11 @@ jobs:
         env:
           PAT: ${{ secrets.SYNC_PAT }}
         run: |
-          echo "Secret length is ${#PAT}"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           
-          # This version uses an environment variable for cleaner URL construction
-          git push --force "https://x-access-token:$PAT@://github.com" main
+          # We add a new remote named 'target'
+          git remote add target https://x-access-token:${PAT}@github.com/sunnykalola73/sunnykalola73.github.io.git
+          
+          # Push the main branch to the target remote
+          git push target main --force
